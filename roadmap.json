@@ -1,0 +1,89 @@
+{
+  "phase": "Planning phase",
+  "updated": "2026-11-20",
+  "modules": [
+    {
+      "key": "organize",
+      "name": "Organize",
+      "tasks": [
+        { "id": "merge-pdf", "name": "Merge PDF", "assignee": "Shafat", "status": "pending" },
+        { "id": "split-pdf", "name": "Split PDF", "assignee": "Shafat", "status": "pending" },
+        { "id": "remove-pages", "name": "Remove pages", "assignee": "Shafat", "status": "pending" },
+        { "id": "extract-pages", "name": "Extract pages", "assignee": "Shafat", "status": "pending" },
+        { "id": "organize-pdf", "name": "Organize PDF", "assignee": "Shafat", "status": "pending" },
+        { "id": "scan-to-pdf", "name": "Scan to PDF", "assignee": "Shafat", "status": "pending" }
+      ]
+    },
+    {
+      "key": "optimize",
+      "name": "Optimize",
+      "tasks": [
+        { "id": "compress-pdf", "name": "Compress PDF", "assignee": "Nahin", "status": "pending" },
+        { "id": "repair-pdf", "name": "Repair PDF", "assignee": "Nahin", "status": "pending" },
+        { "id": "ocr-pdf", "name": "OCR PDF", "assignee": "Nahin", "status": "pending" }
+      ]
+    },
+    {
+      "key": "convert-to",
+      "name": "Convert to PDF",
+      "tasks": [
+        { "id": "jpg-to-pdf", "name": "JPG to PDF", "assignee": null, "status": "pending" },
+        { "id": "word-to-pdf", "name": "Word to PDF", "assignee": null, "status": "pending" },
+        { "id": "ppt-to-pdf", "name": "PowerPoint to PDF", "assignee": null, "status": "pending" },
+        { "id": "excel-to-pdf", "name": "Excel to PDF", "assignee": null, "status": "pending" },
+        { "id": "html-to-pdf", "name": "HTML to PDF", "assignee": null, "status": "pending" }
+      ]
+    },
+    {
+      "key": "convert-from",
+      "name": "Convert from PDF",
+      "tasks": [
+        { "id": "pdf-to-jpg", "name": "PDF to JPG", "assignee": null, "status": "pending" },
+        { "id": "pdf-to-word", "name": "PDF to Word", "assignee": null, "status": "pending" },
+        { "id": "pdf-to-ppt", "name": "PDF to PowerPoint", "assignee": null, "status": "pending" },
+        { "id": "pdf-to-excel", "name": "PDF to Excel", "assignee": null, "status": "pending" },
+        { "id": "pdf-to-pdfa", "name": "PDF to PDF/A", "assignee": null, "status": "pending" }
+      ]
+    },
+    {
+      "key": "edit",
+      "name": "Edit",
+      "tasks": [
+        { "id": "rotate-pdf", "name": "Rotate PDF", "assignee": null, "status": "pending" },
+        { "id": "page-numbers", "name": "Add page numbers", "assignee": null, "status": "pending" },
+        { "id": "watermark", "name": "Add watermark", "assignee": null, "status": "pending" },
+        { "id": "crop-pdf", "name": "Crop PDF", "assignee": null, "status": "pending" },
+        { "id": "edit-pdf", "name": "Edit PDF", "assignee": null, "status": "pending" },
+        { "id": "pdf-forms", "name": "PDF forms", "assignee": null, "status": "pending" }
+      ]
+    },
+    {
+      "key": "security",
+      "name": "Security",
+      "tasks": [
+        { "id": "unlock-pdf", "name": "Unlock PDF", "assignee": null, "status": "pending" },
+        { "id": "protect-pdf", "name": "Protect PDF", "assignee": null, "status": "pending" },
+        { "id": "sign-pdf", "name": "Sign PDF", "assignee": null, "status": "pending" },
+        { "id": "redact-pdf", "name": "Redact PDF", "assignee": null, "status": "pending" },
+        { "id": "compare-pdf", "name": "Compare PDF", "assignee": null, "status": "pending" }
+      ]
+    },
+    {
+      "key": "intelligence",
+      "name": "Intelligence",
+      "tasks": [
+        { "id": "ai-summarizer", "name": "AI Summarizer", "assignee": null, "status": "pending" },
+        { "id": "translate-pdf", "name": "Translate PDF", "assignee": null, "status": "pending" },
+        { "id": "pdf-to-markdown", "name": "PDF to Markdown", "assignee": null, "status": "pending" }
+      ]
+    },
+    {
+      "key": "scan",
+      "name": "Scan",
+      "tasks": [
+        { "id": "scanner", "name": "Document scanner integration", "assignee": null, "status": "pending" },
+        { "id": "deskew", "name": "Auto crop & deskew", "assignee": null, "status": "pending" }
+      ]
+    }
+  ]
+}

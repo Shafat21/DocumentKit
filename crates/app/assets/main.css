@@ -1,0 +1,1041 @@
+/* DocumentKit — design tokens, layout, components.
+   Components use tokens only, so every screen gets light + dark for free.
+   Dark tokens appear twice (explicit dark + system dark): plain CSS can't share a block,
+   and light-dark() is too new for older macOS/Linux WebViews. Keep both in sync. */
+
+/* ---------- Tokens: light (default) ---------- */
+.app {
+  --bg: #f6f7fa;
+  --sidebar: #fbfbfc;
+  --surface: #ffffff;
+  --surface-2: #f2f3f6;
+  --surface-hover: #eceef2;
+  --border: #e4e7ee;
+  --text: #0f1424;
+  --muted: #5f6675;
+  /* Brand red from the logo (#DE0036). White text on it is 5:1, which passes WCAG AA. */
+  --accent: #de0036;
+  --accent-text: #c2002f;
+  --accent-soft: #fde6eb;
+  --primary: #de0036;
+  --primary-hover: #c2002f;
+  --on-primary: #ffffff;
+  --tab-active-bg: #de0036;
+  --logo-tile: transparent;
+  --scrollbar-thumb: #c9ced8;
+  --scrollbar-thumb-hover: #a3aab8;
+  --tab-active-text: #ffffff;
+  --focus: #2563eb;
+  --shadow: 0 1px 2px rgb(15 20 36 / 6%), 0 1px 1px rgb(15 20 36 / 4%);
+  --radius: 12px;
+  --radius-sm: 8px;
+  color-scheme: light;
+}
+
+/* ---------- Tokens: dark ---------- */
+.app[data-theme="dark"] {
+  --bg: #0f1424;
+  --sidebar: #121829;
+  --surface: #171d30;
+  --surface-2: #1d2439;
+  --surface-hover: #232b43;
+  --border: #283049;
+  --text: #f1f3f8;
+  --muted: #a3abbe;
+  --accent: #ff3d6e;
+  --accent-text: #ff7396;
+  --accent-soft: rgb(222 0 54 / 18%);
+  --primary: #4c5cf0;
+  --primary-hover: #3f4fe0;
+  --on-primary: #ffffff;
+  --tab-active-bg: #f1f3f8;
+  --tab-active-text: #0f1424;
+  /* Logo ink is near-black; give it a light tile on dark backgrounds. */
+  --logo-tile: #f1f3f8;
+  --scrollbar-thumb: #2f3852;
+  --scrollbar-thumb-hover: #46517a;
+  --focus: #8ea2ff;
+  --shadow: 0 1px 2px rgb(0 0 0 / 30%);
+  color-scheme: dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  .app[data-theme="system"] {
+    --bg: #0f1424;
+    --sidebar: #121829;
+    --surface: #171d30;
+    --surface-2: #1d2439;
+    --surface-hover: #232b43;
+    --border: #283049;
+    --text: #f1f3f8;
+    --muted: #a3abbe;
+    --accent: #ff3d6e;
+    --accent-text: #ff7396;
+    --accent-soft: rgb(222 0 54 / 18%);
+    --primary: #4c5cf0;
+    --primary-hover: #3f4fe0;
+    --on-primary: #ffffff;
+    --tab-active-bg: #f1f3f8;
+    --tab-active-text: #0f1424;
+  /* Logo ink is near-black; give it a light tile on dark backgrounds. */
+  --logo-tile: #f1f3f8;
+  --scrollbar-thumb: #2f3852;
+  --scrollbar-thumb-hover: #46517a;
+    --focus: #8ea2ff;
+    --shadow: 0 1px 2px rgb(0 0 0 / 30%);
+    color-scheme: dark;
+  }
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+
+body {
+  font-family: "Inter", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Roboto, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+p {
+  margin: 0;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
+
+:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Scrollbars: thin pill that follows the theme.
+   ::-webkit-scrollbar works in all three WebViews (WebView2, WKWebView, WebKitGTK).
+   Don't add `scrollbar-color`: in Chromium 121+ it disables these rules. */
+.app ::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+.app ::-webkit-scrollbar-track,
+.app ::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+.app ::-webkit-scrollbar-thumb {
+  /* Transparent border + padding-box clip = 6px pill inset from the edge. */
+  border: 2px solid transparent;
+  border-radius: 999px;
+  background: var(--scrollbar-thumb) padding-box;
+}
+
+.app ::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scrollbar-thumb-hover);
+}
+
+.app ::-webkit-scrollbar-button {
+  display: none;
+}
+
+/* Sidebar: scrollbar appears only while hovering, so the nav stays clean. */
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: transparent;
+}
+
+.sidebar:hover::-webkit-scrollbar-thumb {
+  background-color: var(--scrollbar-thumb);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+}
+
+.skip-link:focus {
+  left: 12px;
+  top: 12px;
+  z-index: 10;
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+}
+
+/* ---------- Shell ---------- */
+.app {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 16px 12px;
+  background: var(--sidebar);
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 8px 16px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 36px;
+  height: 36px;
+  padding: 2px;
+  border-radius: 9px;
+  background: var(--logo-tile);
+}
+
+.brand-mark svg {
+  width: 100%;
+  height: 100%;
+}
+
+.brand-kit {
+  color: var(--accent);
+}
+
+.brand-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.brand-name {
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.brand-tagline {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.nav-heading {
+  margin: 14px 10px 4px;
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  text-decoration: none;
+  transition: background 120ms ease;
+}
+
+.nav-item:hover {
+  background: var(--surface-hover);
+}
+
+/* Keep the focus ring inside the sidebar instead of clipping at its edge. */
+.nav-item:focus-visible {
+  outline-offset: -2px;
+}
+
+.nav-item.active {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-weight: 600;
+}
+
+.nav-divider {
+  width: 100%;
+  margin: 10px 0;
+  border: 0;
+  border-top: 1px solid var(--border);
+}
+
+.sidebar-spacer {
+  flex: 1;
+  min-height: 16px;
+}
+
+.privacy-card {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.privacy-card > span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.privacy-icon {
+  color: #16a34a;
+}
+
+.privacy-title {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.privacy-body {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.sidebar-version {
+  padding: 8px 10px 0;
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 28px;
+  border-bottom: 1px solid var(--border);
+}
+
+.search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 0 1 460px;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--muted);
+}
+
+.search:focus-within {
+  border-color: var(--focus);
+}
+
+.search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.workspace-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.icon-btn:hover:not(:disabled) {
+  background: var(--surface-hover);
+  color: var(--text);
+}
+
+.icon-btn:disabled {
+  opacity: 0.5;
+}
+
+.content {
+  flex: 1;
+  overflow-y: auto;
+  outline: none;
+}
+
+/* ---------- Page ---------- */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 28px;
+}
+
+.hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.hero h1 {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.hero p {
+  margin-top: 4px;
+}
+
+.pill {
+  flex: none;
+  padding: 5px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.pill-accent {
+  border-color: transparent;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.section-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-head h2 {
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent-text);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.link-btn:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Drop card ---------- */
+.drop-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 24px;
+  border: 1.5px dashed var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.drop-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius);
+  background: var(--surface-2);
+  color: var(--accent);
+}
+
+.drop-text {
+  flex: 1;
+}
+
+.drop-text h2 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.drop-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 18px;
+  border: 0;
+  border-radius: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--primary);
+  color: var(--on-primary);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+}
+
+/* ---------- Tabs ---------- */
+.tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.tab {
+  padding: 6px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tab:hover {
+  color: var(--text);
+}
+
+.tab.active {
+  border-color: transparent;
+  background: var(--tab-active-bg);
+  color: var(--tab-active-text);
+}
+
+/* ---------- Tool cards ---------- */
+.tool-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.tool-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+
+.tool-card:hover {
+  border-color: var(--accent);
+  background: var(--surface-2);
+}
+
+.tool-icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.tool-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.tool-name {
+  font-weight: 600;
+}
+
+.tool-desc {
+  overflow: hidden;
+  color: var(--muted);
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tool-chevron {
+  color: var(--muted);
+}
+
+/* ---------- Recent documents ---------- */
+.recent-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+}
+
+.recent-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+}
+
+.recent-row + .recent-row {
+  border-top: 1px solid var(--border);
+}
+
+.file-badge {
+  padding: 6px 7px;
+  border-radius: 6px;
+  background: var(--accent-soft);
+  color: var(--accent-text);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.recent-text {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-width: 0;
+}
+
+.recent-name {
+  font-weight: 600;
+}
+
+/* ---------- Empty state ---------- */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 32px 16px;
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+  text-align: center;
+}
+
+.empty-icon {
+  color: var(--muted);
+}
+
+.empty-title {
+  font-weight: 600;
+}
+
+.empty-body {
+  max-width: 420px;
+  color: var(--muted);
+}
+
+.page-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding-top: 8px;
+  font-size: 12px;
+}
+
+/* ---------- Shared bits ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+.dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  vertical-align: 1px;
+}
+
+.btn-secondary {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: var(--surface-hover);
+}
+
+.spin {
+  display: inline-flex;
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ---------- Roadmap ---------- */
+.sync-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: -12px;
+}
+
+.sync-text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.sync-text.offline {
+  color: var(--accent-text);
+}
+
+.sync-actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.sync-actions .link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  text-decoration: none;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.stat {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto auto;
+  column-gap: 14px;
+  align-items: center;
+  padding: 18px 20px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.stat-value {
+  grid-row: span 2;
+  color: var(--accent);
+  font-size: 36px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.stat-label {
+  font-weight: 700;
+}
+
+.stat-hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.select select {
+  padding: 7px 30px 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.module-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.module-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.module-title {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.module-title h3 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.module-title .muted {
+  font-size: 12px;
+}
+
+.task-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.task {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.task-status {
+  display: inline-flex;
+  flex: none;
+  color: var(--muted);
+}
+
+.task.done .task-status {
+  color: #16a34a;
+}
+
+.task.done .task-name {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+.task.in-progress .task-status {
+  color: var(--accent);
+}
+
+.task-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.task-assignee {
+  flex: none;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--surface-2);
+  color: var(--text);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.task-assignee.unassigned {
+  background: transparent;
+  color: var(--muted);
+  font-weight: 400;
+}
+
+.module-foot {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+}
+
+.progress {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-2);
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: var(--accent);
+  transition: width 300ms ease;
+}
+
+@media (max-width: 1300px) {
+  .module-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1000px) {
+  .module-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .stat-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+  .tool-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Narrow windows and tablets: sidebar collapses to an icon rail. */
+@media (max-width: 900px) {
+  .app {
+    grid-template-columns: 64px 1fr;
+  }
+
+  .brand-text,
+  .nav-label,
+  .nav-heading,
+  .privacy-card,
+  .sidebar-version {
+    display: none;
+  }
+
+  .brand,
+  .nav-item {
+    justify-content: center;
+  }
+
+  .workspace-pill span {
+    display: none;
+  }
+}
+
+/* Phones. */
+@media (max-width: 600px) {
+  .tool-grid,
+  .module-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sync-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .topbar,
+  .page {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+
+  .hero,
+  .drop-card,
+  .page-footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

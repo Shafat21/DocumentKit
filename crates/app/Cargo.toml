@@ -1,0 +1,46 @@
+[package]
+name = "documentkit"
+description = "DocumentKit: every PDF tool you need, one fast, private, open-source app."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[[bin]]
+name = "documentkit"
+path = "src/main.rs"
+
+[features]
+default = ["desktop"]
+# Windows, macOS, Linux (system WebView via wry).
+desktop = ["dioxus/desktop"]
+# iOS, Android. Build with `dx serve --android` / `dx serve --ios`.
+mobile = ["dioxus/mobile"]
+
+[dependencies]
+dioxus = { workspace = true, features = ["router"] }
+# shortcut: all-icons compiles every Lucide icon; switch to category features once the icon set settles.
+lucide-dioxus = { workspace = true, features = ["all-icons"] }
+dk-core.workspace = true
+dk-organize.workspace = true
+dk-optimize.workspace = true
+dk-convert-to.workspace = true
+dk-convert-from.workspace = true
+dk-edit.workspace = true
+dk-security.workspace = true
+dk-intelligence.workspace = true
+dk-scan.workspace = true
+base64.workspace = true
+ureq.workspace = true
+futures-channel.workspace = true
+futures-util.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+tracing-appender.workspace = true
+
+[dev-dependencies]
+dioxus-ssr.workspace = true
+
+[lints]
+workspace = true

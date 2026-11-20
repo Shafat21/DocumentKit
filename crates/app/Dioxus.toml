@@ -1,0 +1,32 @@
+# dx (dioxus-cli) config. Run dx from this folder: `cd crates/app && dx serve`.
+# Reference: https://dioxuslabs.com/learn/0.7/guides/deploy/config
+
+[application]
+name = "DocumentKit"
+
+[bundle]
+identifier = "io.github.shafat21.documentkit"
+publisher = "DocumentKit"
+category = "Productivity"
+copyright = "Copyright (C) 2026 DocumentKit contributors. GPL-3.0-or-later."
+short_description = "Every PDF tool you need. One fast, private, open-source app."
+long_description = """
+Organize, optimize, convert, edit, secure and analyze PDFs locally.
+Built with Rust. Your files never leave your device.
+"""
+# TODO(packaging): export assets/logo.svg to assets/icons/{32x32,128x128,256x256,512x512}.png,
+# icon.ico and icon.icns, then uncomment. `dx bundle` needs raster icons per OS.
+# icon = [
+#   "assets/icons/32x32.png",
+#   "assets/icons/128x128.png",
+#   "assets/icons/256x256.png",
+#   "assets/icons/512x512.png",
+#   "assets/icons/icon.ico",
+#   "assets/icons/icon.icns",
+# ]
+
+[bundle.macos]
+minimum_system_version = "11.0"
+
+[bundle.deb]
+depends = ["libwebkit2gtk-4.1-0", "libxdo3"]
