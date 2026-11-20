@@ -1,0 +1,66 @@
+[workspace]
+resolver = "2"
+members = ["crates/core", "crates/app", "crates/modules/*"]
+default-members = ["crates/app"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2021"
+license = "GPL-3.0-or-later"
+repository = "https://github.com/Shafat21/DocumentKit"
+rust-version = "1.85"
+
+[workspace.dependencies]
+# Internal crates
+dk-core = { path = "crates/core" }
+dk-organize = { path = "crates/modules/organize" }
+dk-optimize = { path = "crates/modules/optimize" }
+dk-convert-to = { path = "crates/modules/convert-to" }
+dk-convert-from = { path = "crates/modules/convert-from" }
+dk-edit = { path = "crates/modules/edit" }
+dk-security = { path = "crates/modules/security" }
+dk-intelligence = { path = "crates/modules/intelligence" }
+dk-scan = { path = "crates/modules/scan" }
+
+# External crates
+dioxus = "0.7"
+dioxus-ssr = "0.7"
+lucide-dioxus = "3.63"
+rusqlite = { version = "0.37", features = ["bundled"] }
+thiserror = "2"
+dirs = "6"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+# Small blocking HTTPS client (rustls, no OpenSSL) — runs on worker threads only.
+ureq = { version = "2.12", default-features = false, features = ["tls"] }
+futures-channel = "0.3"
+futures-util = { version = "0.3", default-features = false, features = ["std"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
+tracing-appender = "0.2"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+missing_debug_implementations = "warn"
+
+[workspace.lints.clippy]
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+dbg_macro = "deny"
+print_stdout = "deny"
+print_stderr = "deny"
+todo = "warn"
+
+# Fast iteration: optimise dependencies even in dev so the UI stays snappy.
+[profile.dev.package."*"]
+opt-level = 1
+
+[profile.release]
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+strip = true
+# unwind (not abort) so jobs::runner can catch a panicking tool and keep the UI alive.
+panic = "unwind"
