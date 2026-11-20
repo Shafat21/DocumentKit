@@ -348,7 +348,7 @@ button:disabled {
   align-items: center;
   justify-content: space-between;
   gap: 16px;
-  padding: 12px 28px;
+  padding: 12px clamp(16px, 3vw, 48px);
   border-bottom: 1px solid var(--border);
 }
 
@@ -427,9 +427,8 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 28px;
-  max-width: 1120px;
-  margin: 0 auto;
-  padding: 28px;
+  /* Fills the window; side padding grows a little with width. */
+  padding: 28px clamp(16px, 3vw, 48px);
 }
 
 .hero {
@@ -589,7 +588,8 @@ button:disabled {
 /* ---------- Tool cards ---------- */
 .tool-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  /* As many columns as fit; min(100%, …) keeps one column from overflowing on phones. */
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr));
   gap: 12px;
 }
 
@@ -849,7 +849,7 @@ button:disabled {
 
 .module-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
   gap: 12px;
 }
 
@@ -969,28 +969,13 @@ button:disabled {
   transition: width 300ms ease;
 }
 
-@media (max-width: 1300px) {
-  .module-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-}
-
 @media (max-width: 1000px) {
-  .module-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .stat-grid {
     grid-template-columns: 1fr;
   }
 }
 
 /* ---------- Responsive ---------- */
-@media (max-width: 1100px) {
-  .tool-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
 
 /* Narrow windows and tablets: sidebar collapses to an icon rail. */
 @media (max-width: 900px) {
@@ -1018,11 +1003,6 @@ button:disabled {
 
 /* Phones. */
 @media (max-width: 600px) {
-  .tool-grid,
-  .module-grid {
-    grid-template-columns: 1fr;
-  }
-
   .sync-bar {
     flex-direction: column;
     align-items: flex-start;
