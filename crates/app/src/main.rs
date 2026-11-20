@@ -85,6 +85,44 @@ fn launch(ctx: state::AppCtx, data_dir: Option<&Path>) {
         .launch(app::App);
 }
 
+/// Make sure the window is visible, on a monitor, and in front. Call once after first paint.
+///
+/// Dioxus dev builds restore the last window position from a temp file; if the app was
+/// closed while minimized that position is (-32000, -32000), i.e. off every screen.
+/// Dioxus also shows the window without focusing it, leaving it behind the terminal.
+#[cfg(feature = "desktop")]
+pub fn bring_window_on_screen() {
+    use dioxus::desktop::tao::dpi::PhysicalPosition;
+    use dioxus::desktop::LogicalSize;
+
+    let window = dioxus::desktop::window();
+    window.set_minimized(false);
+
+    let on_screen = window.outer_position().is_ok_and(|pos| {
+        window.available_monitors().any(|m| {
+            let (origin, size) = (m.position(), m.size());
+            // Allow a small margin: the frame may sit slightly outside the work area.
+            pos.x >= origin.x - 50
+                && pos.y >= origin.y - 50
+                && pos.x < origin.x + size.width as i32 - 50
+                && pos.y < origin.y + size.height as i32 - 50
+        })
+    });
+
+    if !on_screen {
+        let monitor = window.primary_monitor().or_else(|| window.available_monitors().next());
+        if let Some(monitor) = monitor {
+            window.set_inner_size(LogicalSize::new(1280.0, 820.0));
+            let (origin, area, size) = (monitor.position(), monitor.size(), window.outer_size());
+            let x = origin.x + (area.width.saturating_sub(size.width) / 2) as i32;
+            let y = origin.y + (area.height.saturating_sub(size.height) / 2) as i32;
+            window.set_outer_position(PhysicalPosition::new(x, y));
+        }
+    }
+
+    window.set_focus();
+}
+
 #[cfg(not(feature = "desktop"))]
 fn launch(ctx: state::AppCtx, _data_dir: Option<&Path>) {
     dioxus::LaunchBuilder::new().with_context(ctx).launch(app::App);
