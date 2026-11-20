@@ -1,6 +1,8 @@
 <div align="center">
 
-# 📄 DocumentKit
+<img src="crates/app/assets/logo.svg" alt="DocumentKit logo" width="112" height="112"/>
+
+# DocumentKit
 
 ### Every PDF tool you need. One fast, private, open-source app.
 
@@ -169,13 +171,31 @@ Organize · Optimize · Convert · Edit · Secure · Analyze — all locally, po
 | **Joynur** | UI / UX |
 | **Samin** | QA Testing |
 
+## 🚀 Build from source
+
+```sh
+git clone https://github.com/Shafat21/DocumentKit.git
+cd DocumentKit
+cargo run -p documentkit      # desktop app
+cargo test --workspace        # all tests
+```
+
+Linux needs WebKitGTK first: `sudo apt install libwebkit2gtk-4.1-dev libxdo-dev libssl-dev`. For installers, mobile builds and the full setup, see [CONTRIBUTING.md](CONTRIBUTING.md).
+
+```
+crates/core/              dk-core: tool contract, catalog, SQLite store, theme
+crates/modules/<module>/  one crate per feature module, one file per tool
+crates/app/               Dioxus app (desktop + mobile)
+docs/                     plan, brainstorm, architecture decisions
+```
+
 ## 🤝 Contributing
 
-Contributions are welcome!
+Contributions are welcome! Read [CONTRIBUTING.md](CONTRIBUTING.md) for setup, the code standards, and how to implement a tool. For the architecture, see [docs/PLAN.md](docs/PLAN.md).
 
 1. Open an issue to report a bug or propose a feature.
 2. For larger changes, discuss the approach in the issue first.
-3. Fork, branch, and open a pull request.
+3. Fork, branch (`feat/<module>/<tool>`), and open a pull request.
 
 ## 📜 License
 
