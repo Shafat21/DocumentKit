@@ -1,0 +1,23 @@
+[package]
+name = "dk-core"
+description = "DocumentKit core: tool contract, catalog, local store, theme. No UI."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[features]
+default = ["sqlite"]
+# SQLite-backed Store. Off for targets without SQLite (future web build).
+sqlite = ["dep:rusqlite"]
+
+[dependencies]
+rusqlite = { workspace = true, optional = true }
+thiserror.workspace = true
+dirs.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+
+[lints]
+workspace = true
