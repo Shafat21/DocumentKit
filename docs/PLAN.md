@@ -93,7 +93,7 @@ Each OS bundles natively, and CI's `bundle` job runs a matrix over the three des
 
 ## Known gaps (tracked)
 
-- Bundle icons: export `crates/app/assets/logo.svg` (the official mark) to PNG, ICO and ICNS, then enable `icon` in `Dioxus.toml`.
+- App icons live in `crates/app/assets/icons/` and are generated from the official logo PNG (sizes 32–512 plus a multi-size `icon.ico`). A macOS `icon.icns` is still missing.
 - Font: `crates/app/assets/fonts/InterVariable.woff2` must be present to build (see the README in that folder).
 - Mobile data dir: `dirs::data_dir()` is `None` on Android and iOS, so the app falls back to the working directory. This needs the platform API.
 - `lucide-dioxus` is built with `all-icons`. Trim it to category features to cut compile time.

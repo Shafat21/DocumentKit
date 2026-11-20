@@ -47,6 +47,10 @@ fn open_store(data_dir: Option<&Path>) -> dk_core::Result<Store> {
     Store::in_memory()
 }
 
+/// 256 px is the largest size Windows shows in the taskbar/Alt-Tab; decoding it takes a few ms.
+#[cfg(feature = "desktop")]
+static APP_ICON: &[u8] = include_bytes!("../assets/icons/256x256.png");
+
 #[cfg(feature = "desktop")]
 fn launch(ctx: state::AppCtx, data_dir: Option<&Path>) {
     use dioxus::desktop::{Config, LogicalSize, WindowBuilder};
@@ -66,6 +70,11 @@ fn launch(ctx: state::AppCtx, data_dir: Option<&Path>) {
         .with_window(window)
         .with_menu(None)
         .with_background_color(background);
+    // Window + taskbar icon. Must come after `with_window`, which replaces the builder.
+    match dioxus::desktop::icon_from_memory::<dioxus::desktop::tao::window::Icon>(APP_ICON) {
+        Ok(icon) => config = config.with_icon(icon),
+        Err(e) => tracing::warn!("app icon not loaded: {e}"),
+    }
     if let Some(dir) = data_dir {
         config = config.with_data_directory(dir.join("webview"));
     }

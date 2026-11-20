@@ -14,16 +14,15 @@ long_description = """
 Organize, optimize, convert, edit, secure and analyze PDFs locally.
 Built with Rust. Your files never leave your device.
 """
-# TODO(packaging): export assets/logo.svg to assets/icons/{32x32,128x128,256x256,512x512}.png,
-# icon.ico and icon.icns, then uncomment. `dx bundle` needs raster icons per OS.
-# icon = [
-#   "assets/icons/32x32.png",
-#   "assets/icons/128x128.png",
-#   "assets/icons/256x256.png",
-#   "assets/icons/512x512.png",
-#   "assets/icons/icon.ico",
-#   "assets/icons/icon.icns",
-# ]
+# Generated from the official logo (see docs/PLAN.md → Packaging).
+# TODO(packaging): add icon.icns for a native macOS icon.
+icon = [
+  "assets/icons/32x32.png",
+  "assets/icons/128x128.png",
+  "assets/icons/256x256.png",
+  "assets/icons/512x512.png",
+  "assets/icons/icon.ico",
+]
 
 [bundle.macos]
 minimum_system_version = "11.0"

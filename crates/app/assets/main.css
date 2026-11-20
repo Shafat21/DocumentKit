@@ -98,6 +98,8 @@ html,
 body {
   margin: 0;
   height: 100%;
+  /* The app scrolls inside .content / .sidebar; the window itself never should. */
+  overflow: hidden;
 }
 
 body {
@@ -199,6 +201,7 @@ button:disabled {
 }
 
 .sidebar {
+  position: relative;
   display: flex;
   flex-direction: column;
   gap: 2px;
@@ -411,6 +414,9 @@ button:disabled {
 }
 
 .content {
+  /* Containing block for absolutely positioned children (e.g. .sr-only),
+     so they scroll with the page instead of stretching the window. */
+  position: relative;
   flex: 1;
   overflow-y: auto;
   outline: none;
@@ -719,6 +725,9 @@ button:disabled {
   position: absolute;
   width: 1px;
   height: 1px;
+  margin: -1px;
+  padding: 0;
+  border: 0;
   overflow: hidden;
   clip: rect(0 0 0 0);
   white-space: nowrap;
