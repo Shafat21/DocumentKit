@@ -1,0 +1,19 @@
+# Reviewers are requested automatically for changes under these paths.
+# Use GitHub usernames (e.g. @octocat). Fill in as owners are assigned in the README task table.
+
+# Core contract and app shell: lead developer.
+# /crates/core/           @Shafat21
+# /crates/app/            @Shafat21
+# /Cargo.toml             @Shafat21
+# /docs/adr/              @Shafat21
+
+# Feature modules: engine crate + its UI folder together.
+# /crates/modules/organize/      @Shafat21
+# /crates/app/src/features/organize/  @Shafat21
+# /crates/modules/optimize/
+# /crates/modules/convert-to/
+# /crates/modules/convert-from/
+# /crates/modules/edit/
+# /crates/modules/security/
+# /crates/modules/intelligence/
+# /crates/modules/scan/
