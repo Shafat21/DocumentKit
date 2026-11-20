@@ -146,11 +146,13 @@ Organize · Optimize · Convert · Edit · Secure · Analyze — all locally, po
 
 ### Task allocation
 
+Live status is in [`roadmap.json`](roadmap.json), which the app's **Development roadmap** screen reads. Update that file when the plan changes.
+
 | Category | Tools | Assignee | Status |
 | :--- | :--- | :--- | :---: |
 | Organize | Merge PDF, Split PDF, Remove pages, Extract pages | Shafat | ⏳ Pending |
-| Organize | Organize PDF, Scan to PDF | Nahin | ⏳ Pending |
-| Optimize | Compress PDF, Repair PDF, OCR PDF | _Unassigned_ | ⏳ Pending |
+| Organize | Organize PDF, Scan to PDF | Shafat | ⏳ Pending |
+| Optimize | Compress PDF, Repair PDF, OCR PDF | Nahin | ⏳ Pending |
 | Convert To | JPG to PDF, Word to PDF, HTML to PDF | _Unassigned_ | ⏳ Pending |
 | Convert To | PowerPoint to PDF, Excel to PDF | _Unassigned_ | ⏳ Pending |
 | Convert From | PDF to JPG, PDF to Word, PDF to PDF/A | _Unassigned_ | ⏳ Pending |
@@ -166,9 +168,10 @@ Organize · Optimize · Convert · Edit · Secure · Analyze — all locally, po
 
 | Name | Role |
 | :--- | :--- |
-| **Shafat** | Lead Developer |
+| **Shafat** | Lead Core Coding |
 | **Nahin** | Core Coding |
 | **Joynur** | UI / UX |
+| **Ove** | UI / UX |
 | **Samin** | QA Testing |
 
 ## 🚀 Build from source

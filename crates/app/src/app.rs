@@ -29,6 +29,12 @@ pub fn App() -> Element {
     use_context_provider(|| ThemeCtx::new(ctx.initial_theme));
     use_context_provider(SearchCtx::new);
 
+    // Dioxus creates the window hidden and shows it after the first paint, without
+    // focusing it, so Windows leaves it behind the terminal. Effects run after that
+    // show, so focus it here once. (cfg is compile-time: hook order stays fixed.)
+    #[cfg(feature = "desktop")]
+    use_effect(|| dioxus::desktop::window().set_focus());
+
     rsx! {
         style { {FONT_CSS.as_str()} }
         style { {CSS} }
