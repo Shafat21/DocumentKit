@@ -1,0 +1,14 @@
+[package]
+name = "dk-intelligence"
+description = "DocumentKit Intelligence module: AI summarizer, translate, PDF to Markdown."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+dk-core.workspace = true
+
+[lints]
+workspace = true
