@@ -6,6 +6,10 @@ all-features = false
 
 [advisories]
 yanked = "deny"
+# Fail on unmaintained crates we depend on directly. Transitive ones (e.g. the GTK3
+# bindings under Dioxus/wry on Linux) are upstream's to replace; vulnerabilities
+# still fail the check at any depth.
+unmaintained = "workspace"
 
 [licenses]
 allow = [

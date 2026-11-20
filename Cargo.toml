@@ -9,6 +9,8 @@ edition = "2021"
 license = "GPL-3.0-or-later"
 repository = "https://github.com/Shafat21/DocumentKit"
 rust-version = "1.85"
+# Not published to crates.io; also lets cargo-deny accept internal path dependencies.
+publish = false
 
 [workspace.dependencies]
 # Internal crates

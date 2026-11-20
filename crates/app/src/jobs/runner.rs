@@ -53,7 +53,7 @@ pub fn start(tool: Arc<dyn Tool>, job: Job) -> JobHandle {
     let spawned = std::thread::Builder::new()
         .name(format!("job-{id}"))
         .spawn(move || {
-            let sink = ChannelProgress::new(progress_tx);
+            let sink = ChannelProgress::new(progress_tx, PROGRESS_INTERVAL);
             let _ = done_tx.send(execute(tool.as_ref(), job, &sink));
             // `sink` drops here, closing the progress stream.
         });
@@ -100,11 +100,12 @@ fn panic_message(panic: &(dyn std::any::Any + Send)) -> String {
 /// Throttled, bounded progress sink. Drops intermediate updates rather than blocking the tool.
 struct ChannelProgress {
     inner: Mutex<(mpsc::Sender<(u8, String)>, Option<Instant>)>,
+    interval: Duration,
 }
 
 impl ChannelProgress {
-    fn new(tx: mpsc::Sender<(u8, String)>) -> Self {
-        Self { inner: Mutex::new((tx, None)) }
+    fn new(tx: mpsc::Sender<(u8, String)>, interval: Duration) -> Self {
+        Self { inner: Mutex::new((tx, None)), interval }
     }
 }
 
@@ -112,7 +113,7 @@ impl Progress for ChannelProgress {
     fn report(&self, pct: u8, msg: &str) {
         let Ok(mut guard) = self.inner.lock() else { return };
         let (tx, last) = &mut *guard;
-        let due = last.is_none_or(|t| t.elapsed() >= PROGRESS_INTERVAL) || pct >= 100;
+        let due = last.is_none_or(|t| t.elapsed() >= self.interval) || pct >= 100;
         if due && tx.try_send((pct.min(100), msg.to_owned())).is_ok() {
             *last = Some(Instant::now());
         }
@@ -155,7 +156,8 @@ mod tests {
     #[allow(deprecated)] // try_next is renamed in newer futures-channel; either works here.
     fn progress_is_throttled_and_bounded() {
         let (tx, mut rx) = mpsc::channel(PROGRESS_BUFFER);
-        let sink = ChannelProgress::new(tx);
+        // Huge interval: the burst always fits in one window, however slow the machine.
+        let sink = ChannelProgress::new(tx, Duration::from_secs(3600));
         for i in 0..10_000u32 {
             sink.report((i % 100) as u8, "page");
         }
@@ -165,8 +167,7 @@ mod tests {
         while let Ok(Some(_)) = rx.try_next() {
             received += 1;
         }
-        // Burst within one interval: first update + final 100% only.
-        assert!(received <= 2, "got {received} updates");
-        assert!(received >= 1);
+        // First update + final 100% only.
+        assert_eq!(received, 2);
     }
 }
