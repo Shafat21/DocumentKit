@@ -1,5 +1,6 @@
 //! Persistent app chrome: sidebar + top bar around the routed page.
 
+mod about;
 mod sidebar;
 mod topbar;
 

@@ -1,5 +1,6 @@
 use dioxus::prelude::*;
 
+use super::about::AboutDialog;
 use crate::router::Route;
 use crate::state::theme::use_theme;
 use crate::state::{use_search, use_store};
@@ -12,6 +13,7 @@ pub fn Topbar() -> Element {
     let store = use_store();
     let route = use_route::<Route>();
     let nav = navigator();
+    let mut show_about = use_signal(|| false);
 
     let current = theme.get();
     let theme_icon = match current {
@@ -55,12 +57,15 @@ pub fn Topbar() -> Element {
                 button {
                     class: "icon-btn",
                     r#type: "button",
-                    title: "Help (coming soon)",
-                    "aria-label": "Help (coming soon)",
-                    disabled: true,
+                    title: "About DocumentKit",
+                    "aria-label": "About DocumentKit",
+                    onclick: move |_| show_about.set(true),
                     Icon { name: "circle-help", size: 18 }
                 }
             }
+        }
+        if show_about() {
+            AboutDialog { on_close: move |_| show_about.set(false) }
         }
     }
 }

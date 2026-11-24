@@ -36,7 +36,7 @@ pub fn Sidebar() -> Element {
             }
 
             NavItem { to: Route::AllTools {}, icon: "layout-grid", label: "All tools" }
-            NavItem { to: coming_soon(&["recent"]), icon: "clock", label: "Recent documents" }
+            NavItem { to: Route::Recent {}, icon: "clock", label: "Recent documents" }
             NavItem { to: coming_soon(&["favorites"]), icon: "star", label: "Favorites" }
 
             p { class: "nav-heading", "Workspace" }

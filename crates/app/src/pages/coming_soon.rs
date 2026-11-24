@@ -7,7 +7,6 @@ use crate::ui::EmptyState;
 fn title_for(segments: &[String]) -> &'static str {
     match segments {
         [page] => match page.as_str() {
-            "recent" => "Recent documents",
             "favorites" => "Favorites",
             "settings" => "Settings",
             _ => "Not found",

@@ -3,13 +3,12 @@
 use dioxus::prelude::*;
 use dk_core::catalog::{self, matches};
 use dk_core::platform::OS_LABEL;
-use dk_core::store::RecentDoc;
 use dk_core::{ModuleId, ToolSpec};
 
 use crate::jobs::blocking;
 use crate::router::Route;
 use crate::state::{use_search, use_store};
-use crate::ui::{format_size, EmptyState, Icon, ToolCard};
+use crate::ui::{EmptyState, Icon, RecentRow, ToolCard};
 
 const RECENT_LIMIT: u32 = 5;
 
@@ -190,6 +189,7 @@ fn RecentDocuments() -> Element {
         async move { blocking(move || store.recent_documents(RECENT_LIMIT)).await }
     });
 
+    let has_recent = matches!(&*recent.read(), Some(Some(Ok(docs))) if !docs.is_empty());
     let body = match &*recent.read() {
         None => rsx! { p { class: "muted", "Loading…" } },
         Some(Some(Ok(docs))) if !docs.is_empty() => rsx! {
@@ -217,23 +217,11 @@ fn RecentDocuments() -> Element {
         section { class: "section", "aria-labelledby": "recent-title",
             div { class: "section-head",
                 h2 { id: "recent-title", "Pick up where you left off" }
+                if has_recent {
+                    Link { class: "link-btn", to: Route::Recent {}, "View all →" }
+                }
             }
             {body}
-        }
-    }
-}
-
-#[component]
-fn RecentRow(doc: RecentDoc) -> Element {
-    let date = doc.opened_at.get(..10).unwrap_or(&doc.opened_at).to_owned();
-    rsx! {
-        li { class: "recent-row",
-            span { class: "file-badge", "PDF" }
-            span { class: "recent-text",
-                span { class: "recent-name", "{doc.name}" }
-                span { class: "muted", "{doc.pages} pages · {format_size(doc.size_bytes)}" }
-            }
-            span { class: "muted", "{date}" }
         }
     }
 }

@@ -139,7 +139,8 @@ impl Store {
 
     /// Record that a document was opened (moves it to the top if already present).
     pub fn touch_recent(&self, path: &str, name: &str, pages: u32, size_bytes: u64) -> Result<()> {
-        self.conn()?.execute(
+        let conn = self.conn()?;
+        conn.execute(
             "INSERT INTO recent_documents (path, name, pages, size_bytes)
              VALUES (?1, ?2, ?3, ?4)
              ON CONFLICT(path) DO UPDATE SET
@@ -149,8 +150,36 @@ impl Store {
                 opened_at = strftime('%Y-%m-%dT%H:%M:%SZ', 'now')",
             params![path, name, pages, size_bytes],
         )?;
+        prune_recent(&conn, MAX_RECENT)
+    }
+
+    /// Forget one document.
+    pub fn remove_recent(&self, path: &str) -> Result<()> {
+        self.conn()?.execute(
+            "DELETE FROM recent_documents WHERE path = ?1",
+            params![path],
+        )?;
         Ok(())
     }
+
+    /// Forget every document.
+    pub fn clear_recent(&self) -> Result<()> {
+        self.conn()?.execute("DELETE FROM recent_documents", [])?;
+        Ok(())
+    }
+}
+
+/// Most documents kept in the recent list; older ones are pruned on insert.
+pub const MAX_RECENT: u32 = 500;
+
+fn prune_recent(conn: &Connection, keep: u32) -> Result<()> {
+    conn.execute(
+        "DELETE FROM recent_documents WHERE id NOT IN (
+            SELECT id FROM recent_documents ORDER BY opened_at DESC, id DESC LIMIT ?1
+         )",
+        params![keep],
+    )?;
+    Ok(())
 }
 
 impl Store {
@@ -245,6 +274,35 @@ mod tests {
         let cached = store.roadmap_cache().unwrap().unwrap();
         assert_eq!(cached.json, "{\"a\":2}");
         assert_eq!(cached.fetched_at, at);
+    }
+
+    #[test]
+    fn remove_and_clear_recent() {
+        let store = Store::in_memory().unwrap();
+        store.touch_recent("/a.pdf", "a.pdf", 1, 10).unwrap();
+        store.touch_recent("/b.pdf", "b.pdf", 1, 10).unwrap();
+        store.remove_recent("/a.pdf").unwrap();
+        let docs = store.recent_documents(10).unwrap();
+        assert_eq!(docs.len(), 1);
+        assert_eq!(docs[0].name, "b.pdf");
+        store.clear_recent().unwrap();
+        assert!(store.recent_documents(10).unwrap().is_empty());
+    }
+
+    #[test]
+    fn prune_keeps_newest() {
+        let store = Store::in_memory().unwrap();
+        for i in 0..5 {
+            store.touch_recent(&format!("/{i}.pdf"), "x", 1, 1).unwrap();
+        }
+        prune_recent(&store.conn().unwrap(), 2).unwrap();
+        let paths: Vec<_> = store
+            .recent_documents(10)
+            .unwrap()
+            .into_iter()
+            .map(|d| d.path)
+            .collect();
+        assert_eq!(paths, ["/4.pdf", "/3.pdf"]);
     }
 
     #[test]

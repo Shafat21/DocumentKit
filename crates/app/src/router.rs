@@ -2,7 +2,7 @@
 
 use dioxus::prelude::*;
 
-use crate::pages::{AllTools, ComingSoon, ModulePage, Roadmap, ToolPage};
+use crate::pages::{AllTools, ComingSoon, ModulePage, Recent, Roadmap, ToolPage};
 use crate::shell::Shell;
 
 #[derive(Debug, Clone, PartialEq, Routable)]
@@ -11,6 +11,8 @@ pub enum Route {
     #[layout(Shell)]
         #[route("/")]
         AllTools {},
+        #[route("/recent")]
+        Recent {},
         #[route("/roadmap")]
         Roadmap {},
         // `key` is reserved by Dioxus, so the segment is named `module`.
