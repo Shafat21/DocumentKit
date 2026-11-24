@@ -12,7 +12,7 @@ DocumentKit is a fast, private, open-source PDF toolkit for Windows, macOS, Linu
 | :-: | :--- | :--- |
 | M0 | Workspace, tool contract, theme system, All tools screen, packaging and CI | 🚧 Code written; first build and review pending |
 | M1 | Development roadmap screen, fed live from `roadmap.json` on GitHub | 🚧 Built; needs `roadmap.json` pushed to `main` |
-| M2 | First real tools: Merge, Split (Organize), plus the file dialog and drag-and-drop | Planned |
+| M2 | First real tools: Merge, Split (Organize), plus the file dialog and drag-and-drop | 🚧 Merge PDF built (lopdf, native dialogs, drag-and-drop); Split next |
 | M3 | Remaining modules, in parallel, one owner per module | Planned |
 | M4 | Signed installers, auto-update, mobile release | Planned |
 
@@ -94,6 +94,7 @@ Each OS bundles natively, and CI's `bundle` job runs a matrix over the three des
 ## Known gaps (tracked)
 
 - App icons live in `crates/app/assets/icons/` and are generated from the official logo PNG (sizes 32–512 plus a multi-size `icon.ico`). A macOS `icon.icns` is still missing.
+- pdfium (page previews) is loaded at runtime and not bundled yet. Installers need the per-OS library added as a `Dioxus.toml` resource (see `crates/app/assets/pdfium/README.md`). Without it the app falls back to file icons.
 - Font: `crates/app/assets/fonts/InterVariable.woff2` must be present to build (see the README in that folder).
 - Mobile data dir: `dirs::data_dir()` is `None` on Android and iOS, so the app falls back to the working directory. This needs the platform API.
 - `lucide-dioxus` is built with `all-icons`. Trim it to category features to cut compile time.

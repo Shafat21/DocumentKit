@@ -18,7 +18,6 @@ static TOOLS: LazyLock<Vec<Arc<dyn Tool>>> = LazyLock::new(|| {
 });
 
 /// Implementation for a catalog tool id.
-#[allow(dead_code)] // First caller: the first real tool page.
 pub fn find(id: &str) -> Option<Arc<dyn Tool>> {
     TOOLS.iter().find(|t| t.spec().id == id).cloned()
 }

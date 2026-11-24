@@ -26,7 +26,11 @@ enum SyncState {
 }
 
 /// Show local data first (cache, else built-in), then try GitHub.
-async fn refresh(store: Arc<Store>, mut view: Signal<Option<Loaded>>, mut state: Signal<SyncState>) {
+async fn refresh(
+    store: Arc<Store>,
+    mut view: Signal<Option<Loaded>>,
+    mut state: Signal<SyncState>,
+) {
     if view.peek().is_none() {
         let s = Arc::clone(&store);
         let local = blocking(move || roadmap_source::cached(&s)).await.flatten();
@@ -70,7 +74,10 @@ pub fn Roadmap() -> Element {
         (SyncState::Loading | SyncState::Syncing, _) => "Syncing with GitHub…".to_owned(),
         (_, Origin::Live { fetched_at }) => format!("Synced {}", format_timestamp(fetched_at)),
         (_, Origin::Cached { fetched_at }) => {
-            format!("Offline · showing copy from {}", format_timestamp(fetched_at))
+            format!(
+                "Offline · showing copy from {}",
+                format_timestamp(fetched_at)
+            )
         }
         (_, Origin::Bundled) => "Offline · showing built-in copy".to_owned(),
     };
@@ -189,7 +196,7 @@ fn Stat(value: usize, label: &'static str, hint: String) -> Element {
 fn ModuleCard(module: RoadmapModule) -> Element {
     let total = module.tasks.len();
     let done = module.done();
-    let pct = if total == 0 { 0 } else { done * 100 / total };
+    let pct = (done * 100).checked_div(total).unwrap_or(0);
     let icon = ModuleId::ALL
         .iter()
         .find(|m| m.key() == module.key)
@@ -233,7 +240,11 @@ fn TaskRow(task: Task) -> Element {
         Status::Pending => ("square", "task"),
     };
     let assignee = task.assignee.as_deref().unwrap_or("Unassigned");
-    let assignee_class = if task.assignee.is_some() { "task-assignee" } else { "task-assignee unassigned" };
+    let assignee_class = if task.assignee.is_some() {
+        "task-assignee"
+    } else {
+        "task-assignee unassigned"
+    };
     let status = task.status.label();
 
     rsx! {

@@ -27,6 +27,15 @@ pub fn Icon(name: &'static str, #[props(default = 20)] size: usize) -> Element {
         "upload" => rsx! { lucide::Upload { size } },
         "plus" => rsx! { lucide::Plus { size } },
         "chevron-right" => rsx! { lucide::ChevronRight { size } },
+        "chevron-left" => rsx! { lucide::ChevronLeft { size } },
+        "arrow-left" => rsx! { lucide::ArrowLeft { size } },
+        "x" => rsx! { lucide::X { size } },
+        "circle-check" => rsx! { lucide::CircleCheck { size } },
+        "folder-open" => rsx! { lucide::FolderOpen { size } },
+        "rotate-ccw" => rsx! { lucide::RotateCcw { size } },
+        "eye" => rsx! { lucide::Eye { size } },
+        "sliders-horizontal" => rsx! { lucide::SlidersHorizontal { size } },
+        "arrow-right" => rsx! { lucide::ArrowRight { size } },
         "ellipsis" => rsx! { lucide::Ellipsis { size } },
         "construction" => rsx! { lucide::Construction { size } },
         "refresh-cw" => rsx! { lucide::RefreshCw { size } },
@@ -90,7 +99,10 @@ mod tests {
             .map(|t| t.icon)
             .chain(dk_core::ModuleId::ALL.iter().map(|m| m.icon()));
         for name in names {
-            assert!(src.contains(&format!("\"{name}\" =>")), "icon `{name}` not mapped");
+            assert!(
+                src.contains(&format!("\"{name}\" =>")),
+                "icon `{name}` not mapped"
+            );
         }
     }
 }

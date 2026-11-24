@@ -1,6 +1,9 @@
 <div align="center">
 
-<img src="crates/app/assets/logo.svg" alt="DocumentKit logo" width="112" height="112"/>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="crates/app/assets/logo-dark.svg"/>
+  <img src="crates/app/assets/logo.svg" alt="DocumentKit logo" width="112" height="112"/>
+</picture>
 
 # DocumentKit
 
@@ -44,7 +47,7 @@ Organize · Optimize · Convert · Edit · Secure · Analyze — all locally, po
 <td width="50%" valign="top">
 
 ### 🗂️ Organize
-- [ ] Merge PDF
+- [x] Merge PDF
 - [ ] Split PDF
 - [ ] Remove pages
 - [ ] Extract pages

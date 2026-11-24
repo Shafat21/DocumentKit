@@ -84,7 +84,9 @@ impl Store {
         conn.pragma_update(None, "foreign_keys", true)?;
         conn.pragma_update(None, "synchronous", "NORMAL")?;
         migrate(&conn)?;
-        Ok(Self { conn: Mutex::new(conn) })
+        Ok(Self {
+            conn: Mutex::new(conn),
+        })
     }
 
     fn conn(&self) -> Result<MutexGuard<'_, Connection>> {
@@ -97,7 +99,11 @@ impl Store {
     pub fn get_setting(&self, key: &str) -> Result<Option<String>> {
         let conn = self.conn()?;
         let value = conn
-            .query_row("SELECT value FROM settings WHERE key = ?1", params![key], |r| r.get(0))
+            .query_row(
+                "SELECT value FROM settings WHERE key = ?1",
+                params![key],
+                |r| r.get(0),
+            )
             .optional()?;
         Ok(value)
     }
@@ -152,9 +158,16 @@ impl Store {
     pub fn roadmap_cache(&self) -> Result<Option<CachedRoadmap>> {
         let conn = self.conn()?;
         let cached = conn
-            .query_row("SELECT json, fetched_at FROM roadmap_cache WHERE id = 1", [], |r| {
-                Ok(CachedRoadmap { json: r.get(0)?, fetched_at: r.get(1)? })
-            })
+            .query_row(
+                "SELECT json, fetched_at FROM roadmap_cache WHERE id = 1",
+                [],
+                |r| {
+                    Ok(CachedRoadmap {
+                        json: r.get(0)?,
+                        fetched_at: r.get(1)?,
+                    })
+                },
+            )
             .optional()?;
         Ok(cached)
     }
@@ -194,7 +207,10 @@ mod tests {
         assert_eq!(store.get_setting("theme").unwrap(), None);
         store.set_setting("theme", "dark").unwrap();
         store.set_setting("theme", "light").unwrap();
-        assert_eq!(store.get_setting("theme").unwrap().as_deref(), Some("light"));
+        assert_eq!(
+            store.get_setting("theme").unwrap().as_deref(),
+            Some("light")
+        );
     }
 
     #[test]
@@ -202,7 +218,9 @@ mod tests {
         let store = Store::in_memory().unwrap();
         let conn = store.conn().unwrap();
         migrate(&conn).unwrap();
-        let v: usize = conn.query_row("PRAGMA user_version", [], |r| r.get(0)).unwrap();
+        let v: usize = conn
+            .query_row("PRAGMA user_version", [], |r| r.get(0))
+            .unwrap();
         assert_eq!(v, MIGRATIONS.len());
     }
 

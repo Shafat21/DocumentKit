@@ -4,7 +4,6 @@
 use dk_core::Error;
 
 /// Short, user-facing message for an error.
-#[allow(dead_code)] // first caller: the first real tool page's job status.
 pub fn user_message(error: &Error) -> String {
     match error {
         Error::NotImplemented(id) => format!("{id} is coming soon."),

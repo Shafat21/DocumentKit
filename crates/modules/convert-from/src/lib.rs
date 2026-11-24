@@ -36,7 +36,9 @@ mod tests {
     #[test]
     fn implements_every_catalog_tool_of_this_module() {
         let ids: Vec<_> = super::tools().iter().map(|t| t.spec().id).collect();
-        let expected: Vec<_> = catalog::tools_in(ModuleId::ConvertFrom).map(|t| t.id).collect();
+        let expected: Vec<_> = catalog::tools_in(ModuleId::ConvertFrom)
+            .map(|t| t.id)
+            .collect();
         assert_eq!(ids, expected);
     }
 }

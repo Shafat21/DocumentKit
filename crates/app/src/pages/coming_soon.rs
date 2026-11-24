@@ -1,16 +1,11 @@
 //! Placeholder for screens that aren't built yet, and the 404 fallback.
 
 use dioxus::prelude::*;
-use dk_core::ModuleId;
 
 use crate::ui::EmptyState;
 
 fn title_for(segments: &[String]) -> &'static str {
     match segments {
-        [kind, key] if kind == "module" => ModuleId::ALL
-            .iter()
-            .find(|m| m.key() == key)
-            .map_or("Not found", |m| m.name()),
         [page] => match page.as_str() {
             "recent" => "Recent documents",
             "favorites" => "Favorites",
@@ -50,9 +45,8 @@ mod tests {
 
     #[test]
     fn titles() {
-        assert_eq!(title_for(&segs(&["module", "edit"])), "Edit");
         assert_eq!(title_for(&segs(&["settings"])), "Settings");
-        assert_eq!(title_for(&segs(&["module", "nope"])), "Not found");
+        assert_eq!(title_for(&segs(&["nope", "x"])), "Not found");
         assert_eq!(title_for(&segs(&[])), "Not found");
     }
 }

@@ -12,7 +12,8 @@ use dk_core::store::Store;
 use dk_core::{Error, Result};
 
 /// Raw file on the default branch. Edit roadmap.json on GitHub and every app picks it up.
-pub const RAW_URL: &str = "https://raw.githubusercontent.com/Shafat21/DocumentKit/main/roadmap.json";
+pub const RAW_URL: &str =
+    "https://raw.githubusercontent.com/Shafat21/DocumentKit/main/roadmap.json";
 /// Human-friendly page for the same file.
 pub const FILE_URL: &str = "https://github.com/Shafat21/DocumentKit/blob/main/roadmap.json";
 
@@ -42,7 +43,10 @@ pub fn bundled() -> Loaded {
         tracing::error!("bundled roadmap.json is invalid: {e}");
         Roadmap::default()
     });
-    Loaded { roadmap: Arc::new(roadmap), origin: Origin::Bundled }
+    Loaded {
+        roadmap: Arc::new(roadmap),
+        origin: Origin::Bundled,
+    }
 }
 
 /// Last copy saved from GitHub, if it exists and still parses.
@@ -58,7 +62,9 @@ pub fn cached(store: &Store) -> Option<Loaded> {
     match roadmap::parse(&cached.json) {
         Ok(r) => Some(Loaded {
             roadmap: Arc::new(r),
-            origin: Origin::Cached { fetched_at: cached.fetched_at },
+            origin: Origin::Cached {
+                fetched_at: cached.fetched_at,
+            },
         }),
         Err(e) => {
             tracing::warn!("roadmap cache invalid, ignoring: {e}");
@@ -72,7 +78,10 @@ pub fn fetch_and_cache(store: &Store) -> Result<Loaded> {
     let json = download()?;
     let roadmap = roadmap::parse(&json)?;
     let fetched_at = store.save_roadmap_cache(&json)?;
-    Ok(Loaded { roadmap: Arc::new(roadmap), origin: Origin::Live { fetched_at } })
+    Ok(Loaded {
+        roadmap: Arc::new(roadmap),
+        origin: Origin::Live { fetched_at },
+    })
 }
 
 fn download() -> Result<String> {
@@ -81,7 +90,10 @@ fn download() -> Result<String> {
         .https_only(true)
         .user_agent(concat!("DocumentKit/", env!("CARGO_PKG_VERSION")))
         .build();
-    let response = agent.get(RAW_URL).call().map_err(|e| Error::Network(e.to_string()))?;
+    let response = agent
+        .get(RAW_URL)
+        .call()
+        .map_err(|e| Error::Network(e.to_string()))?;
 
     // Read at most MAX_BYTES + 1 so an oversized (or hostile) response can't exhaust memory.
     let mut body = String::new();
@@ -119,8 +131,12 @@ mod tests {
     #[test]
     fn bundled_roadmap_matches_catalog() {
         let parsed = roadmap::parse(BUNDLED_JSON).unwrap();
-        let roadmap_ids: HashSet<_> =
-            parsed.modules.iter().flat_map(|m| &m.tasks).map(|t| t.id.as_str()).collect();
+        let roadmap_ids: HashSet<_> = parsed
+            .modules
+            .iter()
+            .flat_map(|m| &m.tasks)
+            .map(|t| t.id.as_str())
+            .collect();
         let catalog_ids: HashSet<_> = dk_core::catalog::TOOLS.iter().map(|t| t.id).collect();
         assert_eq!(roadmap_ids, catalog_ids);
 
@@ -134,14 +150,20 @@ mod tests {
         let store = Store::in_memory().unwrap();
         assert!(cached(&store).is_none());
         store.save_roadmap_cache(BUNDLED_JSON).unwrap();
-        assert!(matches!(cached(&store).unwrap().origin, Origin::Cached { .. }));
+        assert!(matches!(
+            cached(&store).unwrap().origin,
+            Origin::Cached { .. }
+        ));
         store.save_roadmap_cache("garbage").unwrap();
         assert!(cached(&store).is_none());
     }
 
     #[test]
     fn formats_timestamp() {
-        assert_eq!(format_timestamp("2026-11-20T09:15:00Z"), "2026-11-20 09:15 UTC");
+        assert_eq!(
+            format_timestamp("2026-11-20T09:15:00Z"),
+            "2026-11-20 09:15 UTC"
+        );
         assert_eq!(format_timestamp("short"), "short");
     }
 }

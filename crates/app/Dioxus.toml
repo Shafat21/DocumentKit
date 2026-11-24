@@ -1,4 +1,7 @@
-# dx (dioxus-cli) config. Run dx from this folder: `cd crates/app && dx serve`.
+# dx (dioxus-cli) config. Run dx from this folder:
+#   cd crates/app && dx serve --desktop --package documentkit
+# (`--package` is required: dx 0.7.10 panics resolving the workspace's default-members
+#  when run from a subfolder.)
 # Reference: https://dioxuslabs.com/learn/0.7/guides/deploy/config
 
 [application]

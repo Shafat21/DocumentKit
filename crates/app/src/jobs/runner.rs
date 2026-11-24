@@ -6,7 +6,6 @@
 //! - progress is throttled (≤ 20 updates/s) through a bounded channel, so a
 //!   10 000-page job cannot flood the renderer or grow memory,
 //! - cancel sets a flag the tool checks per page.
-#![allow(dead_code)] // First caller: the first real tool page.
 
 use std::panic::{catch_unwind, AssertUnwindSafe};
 use std::sync::atomic::{AtomicBool, Ordering};
@@ -24,7 +23,10 @@ const PROGRESS_INTERVAL: Duration = Duration::from_millis(50);
 /// What the UI renders for a running job.
 #[derive(Debug, Clone)]
 pub enum JobState {
-    Running { pct: u8, msg: String },
+    Running {
+        pct: u8,
+        msg: String,
+    },
     /// `Arc` so re-renders don't clone the output.
     Done(Arc<Result<JobOutput>>),
 }
@@ -45,7 +47,10 @@ impl JobHandle {
 /// Start `tool` on `job`. Call from a component or event handler.
 pub fn start(tool: Arc<dyn Tool>, job: Job) -> JobHandle {
     let cancel = job.cancel_handle();
-    let mut state = Signal::new(JobState::Running { pct: 0, msg: String::new() });
+    let mut state = Signal::new(JobState::Running {
+        pct: 0,
+        msg: String::new(),
+    });
     let (progress_tx, mut progress_rx) = mpsc::channel(PROGRESS_BUFFER);
     let (done_tx, done_rx) = futures_channel::oneshot::channel();
 
@@ -64,9 +69,9 @@ pub fn start(tool: Arc<dyn Tool>, job: Job) -> JobHandle {
                 while let Some((pct, msg)) = progress_rx.next().await {
                     state.set(JobState::Running { pct, msg });
                 }
-                let result = done_rx
-                    .await
-                    .unwrap_or_else(|_| Err(Error::Internal("job thread ended without a result".into())));
+                let result = done_rx.await.unwrap_or_else(|_| {
+                    Err(Error::Internal("job thread ended without a result".into()))
+                });
                 state.set(JobState::Done(Arc::new(result)));
             });
         }
@@ -98,20 +103,27 @@ fn panic_message(panic: &(dyn std::any::Any + Send)) -> String {
 }
 
 /// Throttled, bounded progress sink. Drops intermediate updates rather than blocking the tool.
+type ProgressTx = mpsc::Sender<(u8, String)>;
+
 struct ChannelProgress {
-    inner: Mutex<(mpsc::Sender<(u8, String)>, Option<Instant>)>,
+    inner: Mutex<(ProgressTx, Option<Instant>)>,
     interval: Duration,
 }
 
 impl ChannelProgress {
     fn new(tx: mpsc::Sender<(u8, String)>, interval: Duration) -> Self {
-        Self { inner: Mutex::new((tx, None)), interval }
+        Self {
+            inner: Mutex::new((tx, None)),
+            interval,
+        }
     }
 }
 
 impl Progress for ChannelProgress {
     fn report(&self, pct: u8, msg: &str) {
-        let Ok(mut guard) = self.inner.lock() else { return };
+        let Ok(mut guard) = self.inner.lock() else {
+            return;
+        };
         let (tx, last) = &mut *guard;
         let due = last.is_none_or(|t| t.elapsed() >= self.interval) || pct >= 100;
         if due && tx.try_send((pct.min(100), msg.to_owned())).is_ok() {
@@ -148,8 +160,8 @@ mod tests {
 
     #[test]
     fn stub_tool_reports_not_implemented() {
-        let r = execute(&dk_organize::MergePdf, job(), &NoProgress);
-        assert!(matches!(r, Err(Error::NotImplemented("merge-pdf"))));
+        let r = execute(&dk_organize::SplitPdf, job(), &NoProgress);
+        assert!(matches!(r, Err(Error::NotImplemented("split-pdf"))));
     }
 
     #[test]

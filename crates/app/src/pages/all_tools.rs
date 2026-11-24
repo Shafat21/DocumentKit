@@ -9,7 +9,7 @@ use dk_core::{ModuleId, ToolSpec};
 use crate::jobs::blocking;
 use crate::router::Route;
 use crate::state::{use_search, use_store};
-use crate::ui::{EmptyState, Icon, ToolCard};
+use crate::ui::{format_size, EmptyState, Icon, ToolCard};
 
 const RECENT_LIMIT: u32 = 5;
 
@@ -24,7 +24,14 @@ enum Tab {
 }
 
 impl Tab {
-    const ALL: [Tab; 6] = [Tab::Popular, Tab::Organize, Tab::Convert, Tab::EditSign, Tab::Ai, Tab::All];
+    const ALL: [Tab; 6] = [
+        Tab::Popular,
+        Tab::Organize,
+        Tab::Convert,
+        Tab::EditSign,
+        Tab::Ai,
+        Tab::All,
+    ];
 
     const fn label(self) -> &'static str {
         match self {
@@ -39,7 +46,11 @@ impl Tab {
 
     fn tools(self) -> Vec<&'static ToolSpec> {
         let in_modules = |mods: &[ModuleId]| -> Vec<&'static ToolSpec> {
-            catalog::TOOLS.iter().copied().filter(|t| mods.contains(&t.module)).collect()
+            catalog::TOOLS
+                .iter()
+                .copied()
+                .filter(|t| mods.contains(&t.module))
+                .collect()
         };
         match self {
             Tab::Popular => catalog::POPULAR.to_vec(),
@@ -63,7 +74,11 @@ pub fn AllTools() -> Element {
         if query.trim().is_empty() {
             tab().tools()
         } else {
-            catalog::TOOLS.iter().copied().filter(|t| matches(t, &query)).collect()
+            catalog::TOOLS
+                .iter()
+                .copied()
+                .filter(|t| matches(t, &query))
+                .collect()
         }
     });
     let searching = !search.read().trim().is_empty();
@@ -223,32 +238,9 @@ fn RecentRow(doc: RecentDoc) -> Element {
     }
 }
 
-/// 1536 → "1.5 KB".
-fn format_size(bytes: u64) -> String {
-    const UNITS: [&str; 4] = ["B", "KB", "MB", "GB"];
-    let mut size = bytes as f64;
-    let mut unit = 0;
-    while size >= 1024.0 && unit < UNITS.len() - 1 {
-        size /= 1024.0;
-        unit += 1;
-    }
-    if unit == 0 {
-        format!("{bytes} B")
-    } else {
-        format!("{size:.1} {}", UNITS[unit])
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn formats_sizes() {
-        assert_eq!(format_size(512), "512 B");
-        assert_eq!(format_size(1536), "1.5 KB");
-        assert_eq!(format_size(5 * 1024 * 1024), "5.0 MB");
-    }
 
     #[test]
     fn every_tool_reachable_from_all_tab() {

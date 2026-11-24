@@ -1,12 +1,12 @@
 {
   "phase": "Planning phase",
-  "updated": "2026-11-20",
+  "updated": "2026-11-24",
   "modules": [
     {
       "key": "organize",
       "name": "Organize",
       "tasks": [
-        { "id": "merge-pdf", "name": "Merge PDF", "assignee": "Shafat", "status": "pending" },
+        { "id": "merge-pdf", "name": "Merge PDF", "assignee": "Shafat", "status": "done" },
         { "id": "split-pdf", "name": "Split PDF", "assignee": "Shafat", "status": "pending" },
         { "id": "remove-pages", "name": "Remove pages", "assignee": "Shafat", "status": "pending" },
         { "id": "extract-pages", "name": "Extract pages", "assignee": "Shafat", "status": "pending" },

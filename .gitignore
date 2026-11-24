@@ -19,6 +19,12 @@ rustc-ice-*.txt
 # DocumentKit fallback data dir (used when the OS data dir is unavailable)
 documentkit-data/
 
+# pdfium native libraries (downloaded per OS, see crates/app/assets/pdfium/README.md)
+crates/app/assets/pdfium/*.dll
+crates/app/assets/pdfium/*.dylib
+crates/app/assets/pdfium/*.so
+crates/app/assets/pdfium/PDFIUM-LICENSE.txt
+
 # RustRover
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
 #  be found at https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore

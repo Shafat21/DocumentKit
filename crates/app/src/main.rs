@@ -1,12 +1,16 @@
 //! DocumentKit app entry point. The only file that knows which platform it runs on.
 
 // Release builds on Windows run without a console window.
-#![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
+#![cfg_attr(
+    all(not(debug_assertions), target_os = "windows"),
+    windows_subsystem = "windows"
+)]
 
 mod app;
 mod features;
 mod jobs;
 mod logging;
+mod os;
 mod pages;
 mod registry;
 mod roadmap_source;
@@ -110,7 +114,9 @@ pub fn bring_window_on_screen() {
     });
 
     if !on_screen {
-        let monitor = window.primary_monitor().or_else(|| window.available_monitors().next());
+        let monitor = window
+            .primary_monitor()
+            .or_else(|| window.available_monitors().next());
         if let Some(monitor) = monitor {
             window.set_inner_size(LogicalSize::new(1280.0, 820.0));
             let (origin, area, size) = (monitor.position(), monitor.size(), window.outer_size());
@@ -125,5 +131,7 @@ pub fn bring_window_on_screen() {
 
 #[cfg(not(feature = "desktop"))]
 fn launch(ctx: state::AppCtx, _data_dir: Option<&Path>) {
-    dioxus::LaunchBuilder::new().with_context(ctx).launch(app::App);
+    dioxus::LaunchBuilder::new()
+        .with_context(ctx)
+        .launch(app::App);
 }

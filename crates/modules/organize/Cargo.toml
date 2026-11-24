@@ -10,6 +10,12 @@ publish.workspace = true
 
 [dependencies]
 dk-core.workspace = true
+lopdf.workspace = true
+pdfium-render.workspace = true
+image.workspace = true
+
+[dev-dependencies]
+serde_json.workspace = true
 
 [lints]
 workspace = true

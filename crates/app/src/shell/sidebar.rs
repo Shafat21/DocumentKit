@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
 use dk_core::platform::OS_LABEL;
-use dk_core::ModuleId;
+use dk_core::{catalog, ModuleId};
 
 use crate::router::Route;
 use crate::ui::Icon;
@@ -16,6 +16,14 @@ fn coming_soon(path: &[&str]) -> Route {
 
 #[component]
 pub fn Sidebar() -> Element {
+    // A module stays highlighted on its own page and on each of its tools' pages.
+    let route = use_route::<Route>();
+    let active_module = match &route {
+        Route::Module { module } => Some(module.as_str()),
+        Route::Tool { id } => catalog::by_id(id).map(|t| t.module.key()),
+        _ => None,
+    };
+
     rsx! {
         nav { class: "sidebar", "aria-label": "Main",
             div { class: "brand",
@@ -35,9 +43,10 @@ pub fn Sidebar() -> Element {
             for module in ModuleId::ALL {
                 NavItem {
                     key: "{module.key()}",
-                    to: coming_soon(&["module", module.key()]),
+                    to: Route::Module { module: module.key().to_owned() },
                     icon: module.icon(),
                     label: module.name(),
+                    active: active_module == Some(module.key()),
                 }
             }
 
@@ -60,9 +69,19 @@ pub fn Sidebar() -> Element {
 }
 
 #[component]
-fn NavItem(to: Route, icon: &'static str, label: &'static str) -> Element {
+fn NavItem(
+    to: Route,
+    icon: &'static str,
+    label: &'static str,
+    #[props(default)] active: bool,
+) -> Element {
+    let class = if active {
+        "nav-item active"
+    } else {
+        "nav-item"
+    };
     rsx! {
-        Link { class: "nav-item", active_class: "active", to,
+        Link { class, active_class: "active", to,
             Icon { name: icon, size: 18 }
             span { class: "nav-label", "{label}" }
         }

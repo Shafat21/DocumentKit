@@ -104,7 +104,10 @@ impl Roadmap {
     /// Totals across all modules.
     pub fn stats(&self) -> Stats {
         let tasks = self.modules.iter().flat_map(|m| &m.tasks);
-        let mut stats = Stats { modules: self.modules.len(), ..Stats::default() };
+        let mut stats = Stats {
+            modules: self.modules.len(),
+            ..Stats::default()
+        };
         for task in tasks {
             stats.planned += 1;
             match task.status {
@@ -120,14 +123,19 @@ impl Roadmap {
 impl RoadmapModule {
     /// Tasks marked done in this module.
     pub fn done(&self) -> usize {
-        self.tasks.iter().filter(|t| t.status == Status::Done).count()
+        self.tasks
+            .iter()
+            .filter(|t| t.status == Status::Done)
+            .count()
     }
 }
 
 /// Parse and validate roadmap JSON.
 pub fn parse(json: &str) -> Result<Roadmap> {
     if json.len() > MAX_BYTES {
-        return Err(Error::Invalid(format!("roadmap.json is larger than {MAX_BYTES} bytes")));
+        return Err(Error::Invalid(format!(
+            "roadmap.json is larger than {MAX_BYTES} bytes"
+        )));
     }
     let roadmap: Roadmap =
         serde_json::from_str(json).map_err(|e| Error::Invalid(format!("roadmap.json: {e}")))?;

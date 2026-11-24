@@ -7,7 +7,7 @@ _Last updated: 2026-11-20. A living document: add ideas freely. When an idea bec
 | # | Question | Options | Decide before |
 | :-: | :--- | :--- | :--- |
 | Q1 | How does the Intelligence module stay private? | (a) Local models only (candle / llama.cpp, a few hundred MB download). (b) Opt-in cloud API with explicit per-file consent. (c) Both, with local as the default. | Any code in `dk-intelligence` |
-| Q2 | Which PDF engine? | `lopdf` (pure Rust, low-level), `pdfium-render` (Chromium's engine, needs a native lib and FFI crate), `mupdf` (AGPL, which is a license issue), or a mix | M2 (Merge/Split) |
+| Q2 | Which PDF engine? | **Partly decided:** `lopdf` for structural edits ([ADR-0005](adr/0005-pdf-engine-lopdf.md)). Still open: a renderer for page thumbnails and PDF to image (`pdfium-render` favoured) | Thumbnails / PDF to JPG |
 | Q3 | Which OCR engine? | Tesseract via FFI, `ocrs` (pure Rust), or a platform OCR API (Windows.Media.Ocr, Apple Vision) | OCR work |
 | Q4 | How do Office conversions work? | Bundle LibreOffice headless (large), a pure-Rust subset, or platform APIs | Convert-to/-from work |
 | Q5 | Which storage for the web target? | IndexedDB, `sqlite-wasm` with OPFS, or server-side | Web milestone |
@@ -31,7 +31,7 @@ _Last updated: 2026-11-20. A living document: add ideas freely. When an idea bec
 
 ## UX notes
 
-- The mockups have a red accent in light mode and an indigo primary button in dark mode. The tokens in `crates/app/assets/main.css` follow them.
+- Brand red (`#DE0036`) is the primary colour in both themes. The dark mockups used an indigo button, but red was chosen so the sidebar, toggles and buttons match.
 - Below 900 px the sidebar collapses to an icon rail. On phones we may want a bottom tab bar instead; test this on real devices.
 - Every tool page should share one layout: inputs → options → run → result, with the same progress and cancel UI.
 

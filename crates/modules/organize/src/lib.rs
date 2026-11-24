@@ -9,9 +9,12 @@ use dk_core::Tool;
 mod extract_pages;
 mod merge_pdf;
 mod organize_pdf;
+pub mod pdf;
+pub mod preview;
 mod remove_pages;
 mod scan_to_pdf;
 mod split_pdf;
+mod toc;
 
 pub use extract_pages::ExtractPages;
 pub use merge_pdf::MergePdf;
@@ -39,7 +42,9 @@ mod tests {
     #[test]
     fn implements_every_catalog_tool_of_this_module() {
         let ids: Vec<_> = super::tools().iter().map(|t| t.spec().id).collect();
-        let expected: Vec<_> = catalog::tools_in(ModuleId::Organize).map(|t| t.id).collect();
+        let expected: Vec<_> = catalog::tools_in(ModuleId::Organize)
+            .map(|t| t.id)
+            .collect();
         assert_eq!(ids, expected);
     }
 }
