@@ -265,10 +265,11 @@ button:disabled {
 }
 
 .nav-item {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 7px 10px;
+  padding: 8px 12px;
   border-radius: var(--radius-sm);
   color: var(--text);
   text-decoration: none;
@@ -290,11 +291,23 @@ button:disabled {
   font-weight: 600;
 }
 
+/* Accent bar just outside the pill's left edge. */
+.nav-item.active::before {
+  content: "";
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: -8px;
+  width: 3px;
+  border-radius: 999px;
+  background: var(--accent);
+}
+
 .nav-divider {
   width: 100%;
   margin: 10px 0;
   border: 0;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
 }
 
 .sidebar-spacer {
