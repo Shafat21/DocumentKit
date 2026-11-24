@@ -4,12 +4,14 @@ mod empty_state;
 pub mod error_text;
 mod icon;
 mod modal;
+mod select;
 mod toggle;
 mod tool_card;
 
 pub use empty_state::EmptyState;
 pub use icon::Icon;
 pub use modal::Modal;
+pub use select::Select;
 pub use toggle::Toggle;
 pub use tool_card::ToolCard;
 

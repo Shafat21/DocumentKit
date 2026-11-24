@@ -13,7 +13,7 @@ use dk_core::ModuleId;
 use crate::jobs::blocking;
 use crate::roadmap_source::{self, format_timestamp, Loaded, Origin, FILE_URL};
 use crate::state::use_store;
-use crate::ui::{EmptyState, Icon};
+use crate::ui::{EmptyState, Icon, Select};
 
 const ALL_MODULES: &str = "all";
 
@@ -55,7 +55,7 @@ pub fn Roadmap() -> Element {
     let store = use_store();
     let view = use_signal(|| None::<Loaded>);
     let state = use_signal(|| SyncState::Loading);
-    let mut filter = use_signal(|| ALL_MODULES.to_owned());
+    let filter = use_signal(|| ALL_MODULES.to_owned());
 
     let first_store = Arc::clone(&store);
     use_future(move || refresh(Arc::clone(&first_store), view, state));
@@ -83,6 +83,15 @@ pub fn Roadmap() -> Element {
     };
 
     let selected = filter();
+    let filter_options: Vec<(String, String)> =
+        std::iter::once((ALL_MODULES.to_owned(), "All modules".to_owned()))
+            .chain(
+                roadmap
+                    .modules
+                    .iter()
+                    .map(|m| (m.key.clone(), m.name.clone())),
+            )
+            .collect();
     let modules: Vec<&RoadmapModule> = roadmap
         .modules
         .iter()
@@ -142,17 +151,7 @@ pub fn Roadmap() -> Element {
             section { class: "section", "aria-labelledby": "checklist-title",
                 div { class: "section-head",
                     h2 { id: "checklist-title", "Feature implementation checklist" }
-                    label { class: "select",
-                        span { class: "sr-only", "Filter by module" }
-                        select {
-                            value: "{selected}",
-                            onchange: move |e| filter.set(e.value()),
-                            option { value: ALL_MODULES, "All modules" }
-                            for m in roadmap.modules.iter() {
-                                option { key: "{m.key}", value: "{m.key}", "{m.name}" }
-                            }
-                        }
-                    }
+                    Select { label: "Filter by module", options: filter_options, value: filter }
                 }
 
                 if modules.is_empty() {

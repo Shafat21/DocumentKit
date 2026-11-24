@@ -846,15 +846,87 @@ button:disabled {
   font-size: 12px;
 }
 
-.select select {
-  padding: 7px 30px 7px 12px;
+/* ---------- Select (custom dropdown) ---------- */
+.select {
+  position: relative;
+}
+
+.select-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 180px;
+  padding: 7px 10px 7px 12px;
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--surface);
   color: var(--text);
-  font: inherit;
   font-size: 13px;
+  font-weight: 500;
   cursor: pointer;
+}
+
+.select-trigger:hover {
+  background: var(--surface-hover);
+}
+
+.select.open .select-trigger {
+  border-color: var(--accent);
+}
+
+.select-chevron {
+  display: inline-flex;
+  color: var(--muted);
+  transition: transform 150ms ease;
+}
+
+.select.open .select-chevron {
+  transform: rotate(180deg);
+}
+
+.select-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+}
+
+.select-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  z-index: 21;
+  min-width: 100%;
+  max-height: 320px;
+  margin: 0;
+  padding: 4px;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: 0 12px 32px rgb(0 0 0 / 18%);
+}
+
+.select-option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.select-option.active {
+  background: var(--surface-hover);
+}
+
+.select-option.selected {
+  color: var(--accent-text);
+  font-weight: 600;
 }
 
 .module-grid {
