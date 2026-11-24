@@ -17,6 +17,7 @@ mod roadmap_source;
 mod router;
 mod shell;
 mod state;
+mod thumbs;
 mod ui;
 
 use std::path::Path;

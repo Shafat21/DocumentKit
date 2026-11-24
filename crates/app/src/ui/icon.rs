@@ -13,6 +13,7 @@ pub fn Icon(name: &'static str, #[props(default = 20)] size: usize) -> Element {
     match name {
         // App chrome
         "layout-grid" => rsx! { lucide::LayoutGrid { size } },
+        "layout-list" => rsx! { lucide::LayoutList { size } },
         "clock" => rsx! { lucide::Clock { size } },
         "star" => rsx! { lucide::Star { size } },
         "map" => rsx! { lucide::Map { size } },

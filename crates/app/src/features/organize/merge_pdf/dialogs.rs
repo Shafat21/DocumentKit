@@ -4,8 +4,9 @@ use std::path::PathBuf;
 
 use dioxus::prelude::*;
 
-use super::files::{jpeg_data_url, rotation_style};
+use super::files::rotation_style;
 use crate::jobs::blocking;
+use crate::thumbs::jpeg_data_url;
 use crate::ui::{EmptyState, Modal, Toggle};
 
 const PREVIEW_WIDTH: u16 = 480;

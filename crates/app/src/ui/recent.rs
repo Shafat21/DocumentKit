@@ -50,6 +50,80 @@ pub fn relative_time(opened_at: &str, now: u64) -> String {
     }
 }
 
+/// Recency bucket for grouping: "Today" (< 24 h), "This week" (< 7 days), "Earlier".
+pub fn group_label(opened_at: &str, now: u64) -> &'static str {
+    match parse_utc(opened_at).map(|t| (now as i64 - t).max(0)) {
+        Some(0..86_400) => "Today",
+        Some(86_400..604_800) => "This week",
+        _ => "Earlier",
+    }
+}
+
+/// Card for the grid view: first-page preview, name, details, hover actions.
+#[component]
+pub fn RecentCard(
+    doc: RecentDoc,
+    missing: bool,
+    thumb: Option<String>,
+    on_remove: EventHandler<String>,
+) -> Element {
+    let path = PathBuf::from(&doc.path);
+    let reveal_path = path.clone();
+    let when = relative_time(&doc.opened_at, now_secs());
+    let remove_path = doc.path.clone();
+
+    rsx! {
+        article { class: if missing { "doc-card missing" } else { "doc-card" },
+            button {
+                class: "doc-card-open",
+                r#type: "button",
+                title: "{doc.path}",
+                "aria-label": "Open {doc.name}",
+                disabled: missing,
+                onclick: move |_| crate::os::open(&path),
+                div { class: "doc-thumb",
+                    if let Some(src) = &thumb {
+                        img { src: "{src}", alt: "", draggable: "false" }
+                    } else {
+                        Icon { name: "file-text", size: 36 }
+                    }
+                    if missing {
+                        span { class: "tag-missing doc-tag", "File not found" }
+                    }
+                }
+            }
+            div { class: "doc-info",
+                p { class: "doc-name", title: "{doc.name}", "{doc.name}" }
+                p { class: "doc-meta muted",
+                    "{doc.pages} pages · {format_size(doc.size_bytes)}"
+                }
+                p { class: "doc-when muted", "{when}" }
+            }
+            div { class: "doc-actions",
+                button {
+                    class: "icon-btn sm",
+                    r#type: "button",
+                    "data-tip": "Show in folder",
+                    "data-tip-align": "end",
+                    "aria-label": "Show {doc.name} in folder",
+                    disabled: missing,
+                    onclick: move |_| crate::os::reveal(&reveal_path),
+                    Icon { name: "folder-open", size: 15 }
+                }
+                button {
+                    class: "icon-btn sm",
+                    r#type: "button",
+                    "data-tip": "Remove from list",
+                    "data-tip-align": "end",
+                    "aria-label": "Remove {doc.name} from recent documents",
+                    onclick: move |_| on_remove.call(remove_path.clone()),
+                    Icon { name: "x", size: 15 }
+                }
+            }
+        }
+    }
+}
+
 /// One document. Clicking opens it in the default app; missing files can only be removed.
 #[component]
 pub fn RecentRow(
@@ -87,7 +161,8 @@ pub fn RecentRow(
                 button {
                     class: "icon-btn sm",
                     r#type: "button",
-                    title: "Show in folder",
+                    "data-tip": "Show in folder",
+                    "data-tip-align": "end",
                     "aria-label": "Show {doc.name} in folder",
                     disabled: missing,
                     onclick: move |_| crate::os::reveal(&reveal_path),
@@ -97,7 +172,8 @@ pub fn RecentRow(
                     button {
                         class: "icon-btn sm",
                         r#type: "button",
-                        title: "Remove from list",
+                        "data-tip": "Remove from list",
+                        "data-tip-align": "end",
                         "aria-label": "Remove {doc.name} from recent documents",
                         onclick: move |_| on_remove.call(remove_path.clone()),
                         Icon { name: "x", size: 16 }
@@ -117,6 +193,16 @@ mod tests {
         assert_eq!(parse_utc("1970-01-01T00:00:00Z"), Some(0));
         assert_eq!(parse_utc("2000-02-29T00:00:00Z"), Some(951_782_400));
         assert_eq!(parse_utc("garbage"), None);
+    }
+
+    #[test]
+    fn groups_by_recency() {
+        let then = "2026-11-24T10:00:00Z";
+        let t = parse_utc(then).unwrap() as u64;
+        assert_eq!(group_label(then, t + 3600), "Today");
+        assert_eq!(group_label(then, t + 3 * 86_400), "This week");
+        assert_eq!(group_label(then, t + 30 * 86_400), "Earlier");
+        assert_eq!(group_label("bad", t), "Earlier");
     }
 
     #[test]

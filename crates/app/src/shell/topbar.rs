@@ -49,7 +49,8 @@ pub fn Topbar() -> Element {
                 button {
                     class: "icon-btn",
                     r#type: "button",
-                    title: "{theme_label}",
+                    "data-tip": "{theme_label}",
+                    "data-tip-align": "end",
                     "aria-label": "{theme_label}",
                     onclick: move |_| theme.set(current.next(), &store),
                     Icon { name: theme_icon, size: 18 }
@@ -57,7 +58,8 @@ pub fn Topbar() -> Element {
                 button {
                     class: "icon-btn",
                     r#type: "button",
-                    title: "About DocumentKit",
+                    "data-tip": "About DocumentKit",
+                    "data-tip-align": "end",
                     "aria-label": "About DocumentKit",
                     onclick: move |_| show_about.set(true),
                     Icon { name: "circle-help", size: 18 }

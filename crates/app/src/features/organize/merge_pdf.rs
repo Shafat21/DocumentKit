@@ -223,7 +223,8 @@ pub fn MergePdf() -> Element {
                                     div { class: "file-actions",
                                         button {
                                             class: "icon-btn sm", r#type: "button",
-                                            title: "Rotate left",
+                                            "data-tip": "Rotate left",
+                                            "data-tip-align": "end",
                                             "aria-label": "Rotate {file.name} left",
                                             disabled: running,
                                             onclick: move |_| {
@@ -235,7 +236,8 @@ pub fn MergePdf() -> Element {
                                         }
                                         button {
                                             class: "icon-btn sm", r#type: "button",
-                                            title: "Preview",
+                                            "data-tip": "Preview",
+                                            "data-tip-align": "end",
                                             "aria-label": "Preview {file.name}",
                                             disabled: file.page_count().is_none(),
                                             onclick: move |_| previewing.set(Some(i)),
@@ -243,7 +245,8 @@ pub fn MergePdf() -> Element {
                                         }
                                         button {
                                             class: "icon-btn sm", r#type: "button",
-                                            title: "Remove",
+                                            "data-tip": "Remove",
+                                            "data-tip-align": "end",
                                             "aria-label": "Remove {file.name}",
                                             disabled: running,
                                             onclick: move |_| {
@@ -288,7 +291,8 @@ pub fn MergePdf() -> Element {
                         button {
                             class: if extras.is_empty() { "icon-btn" } else { "icon-btn has-dot" },
                             r#type: "button",
-                            title: "Advanced settings",
+                            "data-tip": "Advanced settings",
+                            "data-tip-align": "end",
                             "aria-label": "Advanced settings",
                             disabled: running,
                             onclick: move |_| show_advanced.set(true),

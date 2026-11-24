@@ -12,7 +12,7 @@ mod tool_card;
 pub use empty_state::EmptyState;
 pub use icon::Icon;
 pub use modal::Modal;
-pub use recent::RecentRow;
+pub use recent::{group_label, now_secs, RecentCard, RecentRow};
 pub use select::Select;
 pub use toggle::Toggle;
 pub use tool_card::ToolCard;

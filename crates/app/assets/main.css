@@ -22,6 +22,8 @@
   --on-primary: #ffffff;
   --tab-active-bg: #de0036;
   --scrollbar-thumb: #c9ced8;
+  --tooltip-bg: #0f1424;
+  --tooltip-text: #ffffff;
   --scrollbar-thumb-hover: #a3aab8;
   --tab-active-text: #ffffff;
   --focus: #2563eb;
@@ -53,6 +55,8 @@
   --logo-ink: #ffffff;
   --logo-page: transparent;
   --scrollbar-thumb: #2f3852;
+  --tooltip-bg: #f1f3f8;
+  --tooltip-text: #0f1424;
   --scrollbar-thumb-hover: #46517a;
   --focus: #8ea2ff;
   --shadow: 0 1px 2px rgb(0 0 0 / 30%);
@@ -81,6 +85,8 @@
   --logo-ink: #ffffff;
   --logo-page: transparent;
   --scrollbar-thumb: #2f3852;
+  --tooltip-bg: #f1f3f8;
+  --tooltip-text: #0f1424;
   --scrollbar-thumb-hover: #46517a;
     --focus: #8ea2ff;
     --shadow: 0 1px 2px rgb(0 0 0 / 30%);
@@ -411,6 +417,8 @@ button:disabled {
   place-items: center;
   width: 34px;
   height: 34px;
+  /* Reset the browser's default button padding, which pushed small icons off centre. */
+  padding: 0;
   border: 1px solid transparent;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -425,6 +433,10 @@ button:disabled {
 
 .icon-btn:disabled {
   opacity: 0.5;
+}
+
+.icon-btn svg {
+  display: block;
 }
 
 .content {
@@ -732,12 +744,6 @@ button:disabled {
   color: var(--accent-text);
   font-size: 11px;
   font-weight: 600;
-}
-
-.page-search {
-  flex: none;
-  max-width: 420px;
-  margin-top: -12px;
 }
 
 .link-btn.center {
@@ -1725,6 +1731,243 @@ button:disabled {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
+}
+
+/* ---------- Recent documents page ---------- */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: -12px;
+}
+
+.toolbar-search {
+  flex: 1 1 280px;
+  max-width: 420px;
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+}
+
+.seg {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  padding: 0;
+  height: 28px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.seg:hover {
+  color: var(--text);
+}
+
+.seg.active {
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+.doc-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr));
+  gap: 14px;
+}
+
+.doc-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  transition: border-color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
+}
+
+.doc-card:hover {
+  border-color: var(--accent);
+  box-shadow: 0 8px 24px rgb(15 20 36 / 10%);
+  transform: translateY(-2px);
+}
+
+.doc-card.missing:hover {
+  transform: none;
+}
+
+.doc-card-open {
+  display: block;
+  padding: 10px 10px 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+.doc-card-open:disabled {
+  cursor: default;
+}
+
+.doc-card-open:focus-visible {
+  outline-offset: -2px;
+}
+
+.doc-thumb {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 3 / 4;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.doc-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: #fff;
+}
+
+.doc-card.missing .doc-thumb > :not(.doc-tag) {
+  opacity: 0.35;
+}
+
+.doc-tag {
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+}
+
+.doc-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 10px 12px 12px;
+}
+
+.doc-name {
+  overflow: hidden;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-meta,
+.doc-when {
+  font-size: 12px;
+}
+
+/* Actions float over the preview; shown on hover or keyboard focus. */
+.doc-actions {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  display: flex;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.doc-card:hover .doc-actions,
+.doc-card:focus-within .doc-actions {
+  opacity: 1;
+}
+
+.doc-actions .icon-btn {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+
+/* Small action buttons (cards, rows) hover in the accent colour. */
+.icon-btn.sm:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  background: var(--accent-soft);
+  color: var(--accent-text);
+}
+
+/* ---------- Tooltips ---------- */
+/* Usage: `"data-tip": "Label"` on any element; `"data-tip-align": "end"` for right-edge controls.
+   Pair with an aria-label: screen readers don't read pseudo-element content. */
+[data-tip] {
+  position: relative;
+}
+
+[data-tip]::after {
+  content: attr(data-tip);
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 50%;
+  z-index: 60;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: var(--tooltip-bg);
+  color: var(--tooltip-text);
+  box-shadow: 0 4px 14px rgb(0 0 0 / 18%);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -3px);
+  transition: opacity 120ms ease, transform 120ms ease;
+}
+
+[data-tip-align="end"]::after {
+  right: 0;
+  left: auto;
+  transform: translateY(-3px);
+}
+
+/* Short delay before showing, none when hiding. */
+[data-tip]:hover::after,
+[data-tip]:focus-visible::after {
+  opacity: 1;
+  transform: translate(-50%, 0);
+  transition-delay: 350ms;
+}
+
+[data-tip-align="end"]:hover::after,
+[data-tip-align="end"]:focus-visible::after {
+  transform: none;
 }
 
 /* ---------- Responsive ---------- */

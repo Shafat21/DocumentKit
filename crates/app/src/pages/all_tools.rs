@@ -170,7 +170,7 @@ fn DropCard() -> Element {
                     class: "btn btn-primary",
                     r#type: "button",
                     disabled: true,
-                    title: "Coming soon",
+                    "data-tip": "Coming soon",
                     Icon { name: "plus", size: 18 }
                     "Open files"
                 }
