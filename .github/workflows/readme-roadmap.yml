@@ -1,0 +1,38 @@
+# Keeps the README's feature grid and task table in sync with roadmap.json.
+# Lightweight: Python only, no Rust build. Runs when roadmap.json changes on main.
+name: Sync README roadmap
+
+on:
+  push:
+    branches: [main]
+    paths: [roadmap.json]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: readme-roadmap
+  cancel-in-progress: true
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+      - run: python .github/scripts/readme_roadmap.py
+      - name: Commit if changed
+        run: |
+          if git diff --quiet README.md; then
+            echo "README already up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add README.md
+          git commit -m "docs: sync README roadmap from roadmap.json"
+          git push

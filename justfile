@@ -15,6 +15,10 @@ setup:
 setup:
     sh scripts/setup-pdfium.sh
 
+# Regenerate the README feature grid and task table from roadmap.json.
+readme:
+    python .github/scripts/readme_roadmap.py
+
 # Run the desktop app (no dx needed).
 dev:
     cargo run -p documentkit

@@ -42,6 +42,7 @@ Organize · Optimize · Convert · Edit · Secure · Analyze — all locally, po
 
 ## 🧰 Features
 
+<!-- roadmap:features:start -->
 <table>
 <tr>
 <td width="50%" valign="top">
@@ -113,7 +114,7 @@ Organize · Optimize · Convert · Edit · Secure · Analyze — all locally, po
 <td valign="top">
 
 ### 🧠 Intelligence
-- [ ] AI summarizer
+- [ ] AI Summarizer
 - [ ] Translate PDF
 - [ ] PDF to Markdown
 
@@ -127,6 +128,7 @@ Organize · Optimize · Convert · Edit · Secure · Analyze — all locally, po
 </td>
 </tr>
 </table>
+<!-- roadmap:features:end -->
 
 ## 🏗️ Tech Stack
 
@@ -149,23 +151,22 @@ Organize · Optimize · Convert · Edit · Secure · Analyze — all locally, po
 
 ### Task allocation
 
-Live status is in [`roadmap.json`](roadmap.json), which the app's **Development roadmap** screen reads. Update that file when the plan changes.
+Generated from [`roadmap.json`](roadmap.json), which the app's **Development roadmap** screen also reads. Edit that file, not this table: the README updates itself when it lands on `main`.
+
+<!-- roadmap:tasks:start -->
+![Progress](https://img.shields.io/badge/progress-1%20of%2035%20done-DE0036?style=flat-square)
 
 | Category | Tools | Assignee | Status |
 | :--- | :--- | :--- | :---: |
-| Organize | Merge PDF, Split PDF, Remove pages, Extract pages | Shafat | ⏳ Pending |
-| Organize | Organize PDF, Scan to PDF | Shafat | ⏳ Pending |
+| Organize | ✅ Merge PDF, Split PDF, Remove pages, Extract pages, Organize PDF, Scan to PDF | Shafat | 🚧 1/6 |
 | Optimize | Compress PDF, Repair PDF, OCR PDF | Nahin | ⏳ Pending |
-| Convert To | JPG to PDF, Word to PDF, HTML to PDF | _Unassigned_ | ⏳ Pending |
-| Convert To | PowerPoint to PDF, Excel to PDF | _Unassigned_ | ⏳ Pending |
-| Convert From | PDF to JPG, PDF to Word, PDF to PDF/A | _Unassigned_ | ⏳ Pending |
-| Convert From | PDF to PowerPoint, PDF to Excel | _Unassigned_ | ⏳ Pending |
-| Edit | Rotate PDF, Add page numbers, Add watermark | _Unassigned_ | ⏳ Pending |
-| Edit | Crop PDF, Edit PDF, PDF forms | _Unassigned_ | ⏳ Pending |
-| Security | Unlock PDF, Protect PDF, Sign PDF | _Unassigned_ | ⏳ Pending |
-| Security | Redact PDF, Compare PDF | _Unassigned_ | ⏳ Pending |
-| Intelligence | AI summarizer, Translate PDF, PDF to Markdown | _Unassigned_ | ⏳ Pending |
+| Convert to PDF | JPG to PDF, Word to PDF, PowerPoint to PDF, Excel to PDF, HTML to PDF | _Unassigned_ | ⏳ Pending |
+| Convert from PDF | PDF to JPG, PDF to Word, PDF to PowerPoint, PDF to Excel, PDF to PDF/A | _Unassigned_ | ⏳ Pending |
+| Edit | Rotate PDF, Add page numbers, Add watermark, Crop PDF, Edit PDF, PDF forms | _Unassigned_ | ⏳ Pending |
+| Security | Unlock PDF, Protect PDF, Sign PDF, Redact PDF, Compare PDF | _Unassigned_ | ⏳ Pending |
+| Intelligence | AI Summarizer, Translate PDF, PDF to Markdown | _Unassigned_ | ⏳ Pending |
 | Scan | Document scanner integration, Auto crop & deskew | _Unassigned_ | ⏳ Pending |
+<!-- roadmap:tasks:end -->
 
 ## 👥 Team
 

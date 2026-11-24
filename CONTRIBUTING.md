@@ -65,6 +65,7 @@ The app's **Development roadmap** screen reads [`roadmap.json`](roadmap.json) fr
 - Commit the change to `main`. Apps pick it up when the Roadmap screen opens or someone clicks **Refresh**.
 - When offline, the app shows the last copy it synced, or the copy built into the app.
 - Task ids must match `crates/core/src/catalog.rs`. A test enforces this.
+- The README's Features grid and Task allocation table are generated from this file. The **Sync README roadmap** workflow regenerates them when `roadmap.json` changes on `main`; to do it locally, run `just readme` (or `python .github/scripts/readme_roadmap.py`). Don't edit those README sections by hand.
 
 ## Code standards (short version)
 
